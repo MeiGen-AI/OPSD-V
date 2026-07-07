@@ -1,0 +1,8 @@
+independent_first_frame: false
+same_step_across_blocks: true
+last_step_only: false
+context_noise: 0
+causal: true
+streaming_training: true
+slice_last_frames: 21
+max_grad_norm_generator: 10.0

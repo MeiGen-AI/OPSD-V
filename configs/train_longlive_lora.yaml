@@ -1,0 +1,72 @@
+generator_ckpt: checkpoints/longlive_base.pt
+lora_ckpt: checkpoints/longlive_lora.pt
+data_path: data/train.lmdb
+
+trainer: opsd_streaming
+distribution_loss: opsd_streaming
+generator_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+sharding_strategy: full
+mixed_precision: true
+gradient_checkpointing: true
+use_text_encoder: false
+
+denoising_step_list: [1000, 750, 500, 250]
+warp_denoising_step: true
+num_train_timestep: 1000
+timestep_shift: 5.0
+guidance_scale: 3.0
+denoising_loss_type: flow
+num_frame_per_block: 3
+load_raw_video: false
+
+model_kwargs:
+  model_root: checkpoints/Wan2.1-T2V-1.3B
+  timestep_shift: 5.0
+  local_attn_size: 12
+  sink_size: 3
+
+adapter:
+  type: lora
+  rank: 256
+  alpha: 256
+  dropout: 0.0
+  dtype: bfloat16
+  verbose: false
+
+lora_train_mode: lora
+lora_ema_enabled: true
+ema_weight: 0.9999
+ema_start_step: 0
+
+opsd_loss_type: flow
+opsd_loss_frames: 180
+opsd_max_loss_frames: 243
+opsd_loss_start_frame: 21
+opsd_loss_step_mode: all
+opsd_loss_flag: -1
+opsd_shared_flag_per_window: true
+opsd_backward_per_chunk: true
+opsd_use_gt_first_chunk: true
+opsd_teacher_context_mode: gt_kv
+opsd_student_context_mode: generated_kv
+opsd_teacher_trajectory_mode: student
+opsd_use_relative_sink: true
+opsd_teacher_use_future_gt_context: false
+opsd_teacher_future_gt_num_chunks: 1
+window_start_override: 0
+
+seed: 0
+lr: 1.0e-5
+beta1: 0.0
+beta2: 0.999
+batch_size: 1
+gradient_accumulation_steps: 1
+total_batch_size: 64
+max_iters: 3300
+log_iters: 1
+save_iters: 10
+max_checkpoints: 5
+
+image_or_video_shape: [1, 240, 16, 60, 104]
+negative_prompt: "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走"
