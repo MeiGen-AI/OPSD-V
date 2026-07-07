@@ -66,21 +66,61 @@ The release intentionally removes internal cluster paths, generated videos, logs
 
 ## Installation
 
-We recommend Python 3.10, CUDA-capable GPUs, and PyTorch 2.5 or newer.
+We recommend Python 3.10 with CUDA-capable GPUs. OPSD-V uses
+`torch.nn.attention.flex_attention` in the causal Wan blocks, so PyTorch 2.5+
+is the safest baseline. The code release has been organized around the
+following version family:
+
+| Package | Recommended version | Used for |
+| --- | --- | --- |
+| `python` | `3.10` | Training and inference runtime |
+| `torch` | `>=2.5.0` | FSDP, FlexAttention, model execution |
+| `torchvision` | `>=0.20.0` | MP4 writing through `torchvision.io.write_video` |
+| `diffusers` | `0.31.0` | Wan-style model/config loading utilities |
+| `transformers` | `>=4.49.0` | UMT5 tokenizer/text encoder support |
+| `tokenizers` | `>=0.20.3` | HuggingFace tokenizer backend |
+| `accelerate` | `>=1.1.1` | Shared HF runtime utilities |
+| `peft` | `>=0.14.0` | Student/teacher LoRA adapters |
+| `omegaconf` | `>=2.3.0` | YAML config loading and merging |
+| `einops` | `>=0.7.0` | Tensor rearrangement |
+| `lmdb` | `>=1.4.1` | Precomputed prompt/latent datasets |
+| `numpy`, `Pillow`, `tqdm` | recent stable versions | Data loading, image/video utilities, progress bars |
+| `ftfy`, `regex`, `sentencepiece` | recent stable versions | Wan/UMT5 text tokenization |
+| `tensorboard` | recent stable version | Training logs |
+| `imageio`, `imageio-ffmpeg` | recent stable versions | Debug visualizations and video utilities |
+| `packaging` | recent stable version | Version checks in dependencies |
 
 ```bash
 git clone <repository-url> opsd-v
 cd opsd-v
 
-python -m venv .venv
-source .venv/bin/activate
+conda create -n opsdv python=3.10 -y
+conda activate opsdv
 pip install -U pip
+```
+
+Install PyTorch for your CUDA runtime first. For example, on CUDA 12.1:
+
+```bash
+pip install torch==2.5.1 torchvision==0.20.1 \
+  --index-url https://download.pytorch.org/whl/cu121
+```
+
+Then install the remaining project dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-FlashAttention 2 or 3 is optional but strongly recommended for speed and memory efficiency. Install the wheel that matches your PyTorch and CUDA environment.
+FlashAttention 2 or 3 is optional but strongly recommended for speed and
+memory efficiency. Install the wheel that matches your PyTorch, CUDA, and GPU
+architecture. For Ampere/Ada GPUs, FlashAttention 2 is usually enough; for
+Hopper GPUs, FlashAttention 3 can be used when available. If FlashAttention is
+not installed, the code falls back to PyTorch scaled-dot-product attention, but
+long-video training/inference will be slower and may use more memory.
 
-If you enable debug visualizations in `utils/debug_option.py`, install OpenCV as well:
+If you enable attention-mask debug visualizations in `utils/debug_option.py`,
+install OpenCV as well:
 
 ```bash
 pip install opencv-python
@@ -251,16 +291,6 @@ Add `--use_lora_ema` to merge the teacher/EMA branch when it is present.
 - `--lmdb_use_relative_sink` should be enabled when comparing with the training configs above.
 - Generated videos are saved at 16 FPS.
 - Checkpoints, datasets, logs, and outputs are ignored by `.gitignore`.
-
-## Troubleshooting
-
-| Symptom | Likely fix |
-| --- | --- |
-| `CUDA error: invalid device ordinal` | Make sure `--nproc_per_node` does not exceed visible GPUs. |
-| Wan model files are not found | Set `model_kwargs.model_root` or `WAN_MODEL_ROOT`. |
-| LoRA checkpoint loads but output looks unchanged | Confirm `adapter` exists in the YAML and `lora_ckpt` points to an OPSD-V LoRA checkpoint. |
-| Evaluation is not reproducible after resuming | Add `--per_prompt_seed`. |
-| Debug visualization imports `cv2` | Install `opencv-python` or keep `DEBUG=False`. |
 
 ## Citation
 
