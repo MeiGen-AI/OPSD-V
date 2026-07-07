@@ -1,6 +1,10 @@
 # OPSD-V
 
 <p align="center">
+  <img src="assets/opsdv-logo.png" alt="OPSD-V logo" width="220">
+</p>
+
+<p align="center">
   <b>On-Policy Self-Distillation for Post-Training Few-Step Autoregressive Video Generators</b>
 </p>
 
