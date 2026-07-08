@@ -9,6 +9,27 @@
 </p>
 
 <p align="center">
+  <a href="https://kumapowerliu.github.io/">Hongyu Liu</a><sup>1,2</sup> ·
+  <a href="https://chunwang.site/">Chun Wang</a><sup>1,2</sup> ·
+  <a href="https://scholar.google.com/citations?user=lFkCeoYAAAAJ&hl=en">Feng Gao</a><sup>1,*</sup> ·
+  <a href="https://xuanhuahe.github.io/">Xuanhua He</a><sup>1,2</sup> ·
+  <a href="https://mayuelala.github.io/">Yue Ma</a><sup>2</sup> ·
+  <a href="http://raywzy.com/">Ziyu Wan</a><sup>3</sup> ·
+  <a href="https://auto202603.github.io/">Yong Zhang</a><sup>1,†</sup> ·
+  <a href="https://scholar.google.com/citations?user=JXV5yrZxj5MC&hl=zh-CN">Xiaoming Wei</a><sup>1</sup> ·
+  <a href="https://cqf.io/">Qifeng Chen</a><sup>2,*</sup>
+</p>
+
+<p align="center">
+  <sup>1</sup>Meituan &nbsp;&nbsp;
+  <sup>2</sup>HKUST &nbsp;&nbsp;
+  <sup>3</sup>City University of Hong Kong
+  <br>
+  <sup>*</sup>Corresponding authors &nbsp;&nbsp;
+  <sup>†</sup>Project lead
+</p>
+
+<p align="center">
   <a href="#installation">Installation</a> |
   <a href="#checkpoints">Checkpoints</a> |
   <a href="#training">Training</a> |
@@ -17,10 +38,15 @@
 </p>
 
 <p align="center">
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.10+-234f39">
-  <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.5+-d46b45">
-  <img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-2f7d5c">
-  <img alt="Task" src="https://img.shields.io/badge/Task-Long--Video--Generation-18372f">
+  <a href="https://kumapowerliu.github.io/opsd-v/assets/opsdv.pdf">
+    <img alt="Paper" src="https://img.shields.io/badge/Paper-PDF-bc6c25?logo=adobeacrobatreader&logoColor=white">
+  </a>
+  <a href="https://kumapowerliu.github.io/opsd-v/">
+    <img alt="Project Page" src="https://img.shields.io/badge/Project-Page-2f7d5c?logo=githubpages&logoColor=white">
+  </a>
+  <a href="LICENSE">
+    <img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-18372f">
+  </a>
 </p>
 
 OPSD-V is a cache-aware on-policy self-distillation framework for continued post-training of few-step autoregressive video diffusion generators. It keeps the student on the exact rollout states it will visit at deployment, while a cleaner data-assisted teacher provides dense velocity supervision over the same denoising trajectory and temporal positions.
@@ -68,27 +94,8 @@ The release intentionally removes internal cluster paths, generated videos, logs
 
 We recommend Python 3.10 with CUDA-capable GPUs. OPSD-V uses
 `torch.nn.attention.flex_attention` in the causal Wan blocks, so PyTorch 2.5+
-is the safest baseline. The code release has been organized around the
-following version family:
-
-| Package | Recommended version | Used for |
-| --- | --- | --- |
-| `python` | `3.10` | Training and inference runtime |
-| `torch` | `>=2.5.0` | FSDP, FlexAttention, model execution |
-| `torchvision` | `>=0.20.0` | MP4 writing through `torchvision.io.write_video` |
-| `diffusers` | `0.31.0` | Wan-style model/config loading utilities |
-| `transformers` | `>=4.49.0` | UMT5 tokenizer/text encoder support |
-| `tokenizers` | `>=0.20.3` | HuggingFace tokenizer backend |
-| `accelerate` | `>=1.1.1` | Shared HF runtime utilities |
-| `peft` | `>=0.14.0` | Student/teacher LoRA adapters |
-| `omegaconf` | `>=2.3.0` | YAML config loading and merging |
-| `einops` | `>=0.7.0` | Tensor rearrangement |
-| `lmdb` | `>=1.4.1` | Precomputed prompt/latent datasets |
-| `numpy`, `Pillow`, `tqdm` | recent stable versions | Data loading, image/video utilities, progress bars |
-| `ftfy`, `regex`, `sentencepiece` | recent stable versions | Wan/UMT5 text tokenization |
-| `tensorboard` | recent stable version | Training logs |
-| `imageio`, `imageio-ffmpeg` | recent stable versions | Debug visualizations and video utilities |
-| `packaging` | recent stable version | Version checks in dependencies |
+is the safest baseline. Install PyTorch for your CUDA runtime first, then
+install the remaining packages from [`requirements.txt`](requirements.txt).
 
 ```bash
 git clone <repository-url> opsd-v
@@ -99,16 +106,12 @@ conda activate opsdv
 pip install -U pip
 ```
 
-Install PyTorch for your CUDA runtime first. For example, on CUDA 12.1:
+For example, on CUDA 12.1:
 
 ```bash
 pip install torch==2.5.1 torchvision==0.20.1 \
   --index-url https://download.pytorch.org/whl/cu121
-```
 
-Then install the remaining project dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
@@ -166,7 +169,13 @@ Base generator checkpoints may store weights under `generator`, `generator_ema`,
 
 ## Training Data
 
-Training uses an LMDB containing precomputed text embeddings and Wan VAE latents. The loader accepts both naming schemes below:
+The full training dataset cannot be redistributed due to company policy.
+Instead, we provide a small 10-video toy example for checking the LMDB format,
+testing the data loader, and running smoke tests. The toy data is intended for
+code validation only and is not sufficient to reproduce the paper numbers.
+
+Training uses an LMDB containing precomputed text embeddings and Wan VAE latents.
+The loader accepts both naming schemes below:
 
 ```text
 prompts_shape / text_shape
