@@ -200,6 +200,10 @@ testing the data loader, and running smoke tests. The toy data is intended for
 code validation only and is not sufficient to reproduce the paper numbers.
 
 Training uses an LMDB containing precomputed text embeddings and Wan VAE latents.
+See [`data_processing/`](data_processing/) for an audio-free preprocessing
+pipeline that converts your own long videos into this LMDB format. The full
+training data cannot be released, and the repository intentionally does not
+include any video, latent, embedding, or LMDB data files.
 The loader accepts both naming schemes below:
 
 ```text
