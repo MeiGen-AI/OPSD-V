@@ -1,7 +1,7 @@
 # OPSD-V
 
 <p align="center">
-  <img src="assets/opsdv-logo.png" alt="OPSD-V logo" width="220">
+  <img src="assets/opsdv-hero.png" alt="OPSD-V overview" width="92%">
 </p>
 
 <p align="center">
