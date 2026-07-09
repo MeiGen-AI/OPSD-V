@@ -44,6 +44,9 @@
   <a href="https://kumapowerliu.github.io/OPSD-V/">
     <img alt="Project Page" src="https://img.shields.io/badge/Project-Page-2f7d5c?logo=githubpages&logoColor=white">
   </a>
+  <a href="https://huggingface.co/MeiGen-AI/OPSD-V">
+    <img alt="Hugging Face" src="https://img.shields.io/badge/Models-HuggingFace-ffcc4d?logo=huggingface&logoColor=111111">
+  </a>
   <a href="LICENSE">
     <img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-18372f">
   </a>
