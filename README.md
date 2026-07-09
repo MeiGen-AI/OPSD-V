@@ -38,7 +38,7 @@
 </p>
 
 <p align="center">
-  <a href="https://meigen-ai.github.io/OPSD-V/assets/opsdv.pdf">
+  <a href="assets/opsdv.pdf">
     <img alt="Paper" src="https://img.shields.io/badge/Paper-PDF-bc6c25?logo=adobeacrobatreader&logoColor=white">
   </a>
   <a href="https://meigen-ai.github.io/OPSD-V/">
