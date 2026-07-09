@@ -53,9 +53,87 @@ OPSD-V is an on-policy self-distillation paradigm for post-training few-step aut
 
 This repository contains the training and inference code for OPSD-V.
 
+## Motivation
+
+Few-step AR video generators are fast, but every generated chunk is written back
+into the KV cache. Small errors therefore become part of the temporal state for
+all later chunks, leading to long-horizon visual degradation and weakened motion.
+OPSD-V starts from this cache-degradation view: keep the student on its deployed
+generated-cache states, but give the teacher a cleaner AR-consistent view built
+from real long-video context.
+
 <p align="center">
   <img src="assets/motivation.jpg" alt="OPSD-V motivation" width="92%">
 </p>
+
+### Training-free GT-cache diagnostic
+
+Before any post-training, the original generator can already reveal the problem.
+Given an LMDB containing a real video latent and its prompt, run the same
+checkpoint twice with the same seed: once with generated cache history, and once
+with older KV-cache history refreshed from the corresponding real video while
+keeping the latest chunk model-generated. If the second rollout improves, the
+failure is strongly tied to accumulated generated-cache drift, making OPSD-V's
+real-video teacher context a natural training signal.
+
+<p align="center">
+  <img src="assets/gt-cache-diagnostic.gif" alt="Training-free GT-cache diagnostic: generated cache vs data-assisted cache" width="92%">
+</p>
+
+For LongLive, the original model uses its released LoRA adapter:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_longlive_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/longlive_generated_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source generated \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_longlive_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/longlive_gt_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source gt \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+```
+
+For Self-Forcing, the original checkpoint is loaded without any LoRA adapter:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_self_forcing_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/self_forcing_generated_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source generated \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_self_forcing_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/self_forcing_gt_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source gt \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+```
+
+The `gt` setting is a diagnostic intervention, not the standard open-ended
+generation protocol, because it requires real-video latents in the LMDB.
 
 ## Highlights
 
@@ -191,82 +269,6 @@ After downloading, the provided configs expect:
 | `checkpoints/opsdv_self_forcing_lora.pt` | Self-Forcing inference | OPSD-V LoRA checkpoint |
 
 Base generator checkpoints may store weights under `generator`, `generator_ema`, or `model`. OPSD-V LoRA checkpoints store `generator_lora`, optional `generator_ema`, optimizer state, and `step`.
-
-### Training-free GT-cache diagnostic
-
-OPSD-V also includes a simple diagnostic mode that does not train or load an
-OPSD-V adapter. Given an LMDB containing a real video latent and its prompt, the
-original generator can be run twice with the same seed:
-
-- `--lmdb_cache_update_source generated`: the deployed setting, where generated
-  chunks are written back into the KV cache.
-- `--lmdb_cache_update_source gt`: a cache-intervention setting, where older KV
-  history is refreshed using corresponding real-video chunks while the latest
-  generated chunk is kept for autoregressive continuation.
-
-This gives an intuitive test for whether long-horizon degradation is caused by
-the generated cache history. If replacing only older cache history improves the
-rollout without any training, it supports the motivation for using real
-long-video context as cleaner teacher supervision during OPSD-V post-training.
-
-<p align="center">
-  <img src="assets/gt-cache-diagnostic.gif" alt="Training-free GT-cache diagnostic: generated cache vs data-assisted cache" width="92%">
-</p>
-
-For LongLive, the original model uses its released LoRA adapter:
-
-```bash
-CUDA_VISIBLE_DEVICES=0 python inference.py \
-  --config_path configs/inference_longlive_original.yaml \
-  --data_path data/eval.lmdb \
-  --output_folder outputs/longlive_generated_cache \
-  --num_output_frames 243 \
-  --use_lmdb \
-  --lmdb_use_gt_first_chunk \
-  --lmdb_cache_update_source generated \
-  --lmdb_use_relative_sink \
-  --per_prompt_seed
-
-CUDA_VISIBLE_DEVICES=0 python inference.py \
-  --config_path configs/inference_longlive_original.yaml \
-  --data_path data/eval.lmdb \
-  --output_folder outputs/longlive_gt_cache \
-  --num_output_frames 243 \
-  --use_lmdb \
-  --lmdb_use_gt_first_chunk \
-  --lmdb_cache_update_source gt \
-  --lmdb_use_relative_sink \
-  --per_prompt_seed
-```
-
-For Self-Forcing, the original checkpoint is loaded without any LoRA adapter:
-
-```bash
-CUDA_VISIBLE_DEVICES=0 python inference.py \
-  --config_path configs/inference_self_forcing_original.yaml \
-  --data_path data/eval.lmdb \
-  --output_folder outputs/self_forcing_generated_cache \
-  --num_output_frames 243 \
-  --use_lmdb \
-  --lmdb_use_gt_first_chunk \
-  --lmdb_cache_update_source generated \
-  --lmdb_use_relative_sink \
-  --per_prompt_seed
-
-CUDA_VISIBLE_DEVICES=0 python inference.py \
-  --config_path configs/inference_self_forcing_original.yaml \
-  --data_path data/eval.lmdb \
-  --output_folder outputs/self_forcing_gt_cache \
-  --num_output_frames 243 \
-  --use_lmdb \
-  --lmdb_use_gt_first_chunk \
-  --lmdb_cache_update_source gt \
-  --lmdb_use_relative_sink \
-  --per_prompt_seed
-```
-
-The `gt` setting is a diagnostic intervention, not the standard open-ended
-generation protocol, because it requires real-video latents in the LMDB.
 
 ## Training Data
 
