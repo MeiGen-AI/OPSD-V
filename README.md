@@ -226,10 +226,20 @@ The default configs train on up to 243 latent frames, use a real-video first chu
 
 ## Training
 
+The paper experiments use 24 GPUs across 3 nodes, with 8 GPUs per node. On each node, set `MASTER_ADDR` to the address of rank-0 node and set `NODE_RANK` to `0`, `1`, or `2` respectively.
+
 ### LongLive continued post-training
 
 ```bash
-torchrun --standalone --nproc_per_node=8 train.py \
+export MASTER_ADDR=<rank-0-host>
+export MASTER_PORT=29500
+export NODE_RANK=<0|1|2>
+
+torchrun --nnodes=3 --nproc_per_node=8 \
+  --node_rank=${NODE_RANK} \
+  --master_addr=${MASTER_ADDR} \
+  --master_port=${MASTER_PORT} \
+  train.py \
   --config_path configs/train_longlive_lora.yaml \
   --logdir logs/opsdv_longlive
 ```
@@ -237,7 +247,15 @@ torchrun --standalone --nproc_per_node=8 train.py \
 ### Self-Forcing continued post-training
 
 ```bash
-torchrun --standalone --nproc_per_node=8 train.py \
+export MASTER_ADDR=<rank-0-host>
+export MASTER_PORT=29500
+export NODE_RANK=<0|1|2>
+
+torchrun --nnodes=3 --nproc_per_node=8 \
+  --node_rank=${NODE_RANK} \
+  --master_addr=${MASTER_ADDR} \
+  --master_port=${MASTER_PORT} \
+  train.py \
   --config_path configs/train_self_forcing_lora.yaml \
   --logdir logs/opsdv_self_forcing
 ```
