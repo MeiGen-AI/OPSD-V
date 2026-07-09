@@ -41,7 +41,7 @@
   <a href="https://kumapowerliu.github.io/opsd-v/assets/opsdv.pdf">
     <img alt="Paper" src="https://img.shields.io/badge/Paper-PDF-bc6c25?logo=adobeacrobatreader&logoColor=white">
   </a>
-  <a href="https://kumapowerliu.github.io/opsd-v/">
+  <a href="https://kumapowerliu.github.io/OPSD-V/">
     <img alt="Project Page" src="https://img.shields.io/badge/Project-Page-2f7d5c?logo=githubpages&logoColor=white">
   </a>
   <a href="LICENSE">
