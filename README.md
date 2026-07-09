@@ -336,7 +336,7 @@ Add `--use_lora_ema` to merge the teacher/EMA branch when it is present.
 
 ## Acknowledgements
 
-This codebase builds on Wan2.1, Self-Forcing, and LongLive. We thank their authors for releasing models and code. Please follow the licenses and usage terms of the corresponding base checkpoints and upstream components.
+This codebase builds on [Wan2.1](https://github.com/Wan-Video/Wan2.1), [Self-Forcing](https://github.com/guandeh17/Self-Forcing), [LongLive](https://github.com/NVlabs/LongLive), and [D-OPSD](https://github.com/vvvvvjdy/D-OPSD). We thank their authors for releasing models and code. Please follow the licenses and usage terms of the corresponding base checkpoints and upstream components.
 
 ## License
 
