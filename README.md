@@ -82,13 +82,13 @@ pipeline/                AR inference and OPSD streaming training pipelines
 trainer/                 FSDP/LoRA trainer, EMA, resume, and checkpointing
 utils/                   Dataset, scheduler, LoRA, memory, and Wan wrappers
 wan/modules/             Wan2.1 modules and causal attention implementation
-tools/                   Utilities, including LoRA merge
+tools/                   Utility scripts
 example/                 Prompt files for quick inference checks
 train.py                 Distributed OPSD-V training entry point
 inference.py             Text/LMDB inference entry point
 ```
 
-The release intentionally removes internal cluster paths, generated videos, logs, checkpoints, datasets, and unrelated legacy trainers.
+This release excludes generated videos, logs, checkpoints, datasets, and unrelated legacy trainers.
 
 ## Installation
 
@@ -194,14 +194,14 @@ Base generator checkpoints may store weights under `generator`, `generator_ema`,
 
 ## Training Data
 
-The full training dataset cannot be redistributed due to company policy.
+The full training dataset cannot be redistributed due to data licensing and privacy constraints.
 Instead, we provide a small 10-video toy example for checking the LMDB format,
 testing the data loader, and running smoke tests. The toy data is intended for
 code validation only and is not sufficient to reproduce the paper numbers.
 
 Training uses an LMDB containing precomputed text embeddings and Wan VAE latents.
 See [`data_processing/`](data_processing/) for an audio-free preprocessing
-pipeline that converts your own long videos into this LMDB format. The full
+pipeline that converts your own long videos into this LMDB format. The private
 training data cannot be released, and the repository intentionally does not
 include any video, latent, embedding, or LMDB data files.
 The loader accepts both naming schemes below:
@@ -327,20 +327,6 @@ CUDA_VISIBLE_DEVICES=0 python inference.py \
 
 Arguments that expose GT cache replacement or future GT context are diagnostic tools, not the standard open-ended generation setting.
 
-## Merge a LoRA
-
-Merge an OPSD-V LoRA into a plain generator checkpoint:
-
-```bash
-python tools/merge_lora_to_generator.py \
-  --config_path configs/inference_longlive.yaml \
-  --generator_ckpt checkpoints/longlive_base.pt \
-  --lora_ckpt checkpoints/opsdv_longlive_lora.pt \
-  --output_path checkpoints/opsdv_longlive_merged.pt
-```
-
-Add `--use_lora_ema` to merge the teacher/EMA branch when it is present.
-
 ## Citation
 
 ```bibtex
@@ -358,4 +344,4 @@ This codebase builds on [Wan2.1](https://github.com/Wan-Video/Wan2.1), [Self-For
 
 ## License
 
-This repository is released under the Apache License 2.0. See [LICENSE](LICENSE). Individual upstream components retain their original copyright notices.
+OPSD-V code is released under the Apache License 2.0. See [LICENSE](LICENSE). This repository also contains files adapted from upstream projects, including Wan2.1 and Self-Forcing; those files retain their original copyright notices and license identifiers. Please follow the licenses and usage terms of the corresponding upstream code, models, and checkpoints.

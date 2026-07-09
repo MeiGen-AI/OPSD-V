@@ -150,7 +150,7 @@ This is the format consumed by the OPSD-V training configs through
 
 ## Notes
 
-- This release does not include company training data.
+- This release does not include private training data.
 - Audio embeddings are intentionally not part of this open-source preprocessing
   path.
 - If you use different resolution or frame count, update training configs
