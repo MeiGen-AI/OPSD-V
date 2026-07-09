@@ -1,0 +1,328 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1050" viewBox="0 0 1800 1050" role="img" aria-labelledby="title desc">
+  <title id="title">OPSD-V pipeline</title>
+  <desc id="desc">Pipeline of OPSD-V for autoregressive video generation, showing a cleaner-context teacher and an on-policy student rollout aligned by dense denoising-level loss.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fbfcff"/>
+      <stop offset="58%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#fff7ed"/>
+    </linearGradient>
+    <radialGradient id="glowBlue" cx="22%" cy="72%" r="58%">
+      <stop offset="0%" stop-color="#dff1ff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#dff1ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowOrange" cx="86%" cy="18%" r="58%">
+      <stop offset="0%" stop-color="#fff0d6" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#fff0d6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="teacherLane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf2"/>
+      <stop offset="100%" stop-color="#fff1dc"/>
+    </linearGradient>
+    <linearGradient id="studentLane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6fbff"/>
+      <stop offset="100%" stop-color="#eaf5ff"/>
+    </linearGradient>
+    <linearGradient id="prefixCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f0ff"/>
+    </linearGradient>
+    <linearGradient id="inputCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f8ff"/>
+    </linearGradient>
+    <linearGradient id="orangeCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fff4e6"/>
+    </linearGradient>
+    <linearGradient id="blueCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#edf7ff"/>
+    </linearGradient>
+    <linearGradient id="videoA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c7e9ff"/>
+      <stop offset="58%" stop-color="#eef9ff"/>
+      <stop offset="100%" stop-color="#75b985"/>
+    </linearGradient>
+    <linearGradient id="videoB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#bfe0ff"/>
+      <stop offset="55%" stop-color="#f8fbff"/>
+      <stop offset="100%" stop-color="#8abf76"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.13"/>
+    </filter>
+    <filter id="smallShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowDark" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#26323f"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="11" markerHeight="11" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1d6fb8"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="10" markerHeight="10" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f8f62"/>
+    </marker>
+    <style>
+      .font { font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif; }
+      .title { font-size: 58px; font-weight: 800; fill: #122033; letter-spacing: 1px; }
+      .subtitle { font-size: 24px; font-weight: 500; fill: #536274; }
+      .laneTitle { font-size: 30px; font-weight: 800; }
+      .cardTitle { font-size: 24px; font-weight: 800; fill: #182338; }
+      .cardText { font-size: 19px; font-weight: 500; fill: #334155; }
+      .smallText { font-size: 16px; font-weight: 600; fill: #64748b; }
+      .chipText { font-size: 16px; font-weight: 800; }
+      .math { font-style: italic; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1050" fill="url(#bg)"/>
+  <rect width="1800" height="1050" fill="url(#glowBlue)"/>
+  <rect width="1800" height="1050" fill="url(#glowOrange)"/>
+
+  <text x="900" y="72" text-anchor="middle" class="font title">OPSD-V</text>
+  <text x="900" y="108" text-anchor="middle" class="font subtitle">On-policy self-distillation for cache-aware autoregressive video generation</text>
+
+  <g class="font" transform="translate(1174 54)">
+    <rect x="0" y="0" width="128" height="32" rx="16" fill="#eaf5ff" stroke="#5aa2dd" stroke-width="1.5"/>
+    <circle cx="19" cy="16" r="6" fill="#1d6fb8"/>
+    <text x="33" y="21" class="chipText" fill="#1d4f86">student</text>
+    <rect x="142" y="0" width="128" height="32" rx="16" fill="#fff3df" stroke="#f97316" stroke-width="1.5"/>
+    <circle cx="161" cy="16" r="6" fill="#f97316"/>
+    <text x="175" y="21" class="chipText" fill="#b45309">teacher</text>
+    <rect x="284" y="0" width="122" height="32" rx="16" fill="#f0fdf4" stroke="#2f8f62" stroke-width="1.5"/>
+    <circle cx="303" cy="16" r="6" fill="#2f8f62"/>
+    <text x="317" y="21" class="chipText" fill="#166534">real video</text>
+    <rect x="420" y="0" width="104" height="32" rx="16" fill="#fff1f2" stroke="#dc2626" stroke-width="1.5"/>
+    <circle cx="439" cy="16" r="6" fill="#dc2626"/>
+    <text x="453" y="21" class="chipText" fill="#b91c1c">loss</text>
+  </g>
+
+  <!-- Input card -->
+  <g class="font" filter="url(#softShadow)">
+    <rect x="42" y="292" width="240" height="320" rx="22" fill="url(#inputCard)" stroke="#3b4e73" stroke-width="2"/>
+    <text x="162" y="344" text-anchor="middle" class="cardTitle">Long video</text>
+    <text x="162" y="374" text-anchor="middle" class="cardTitle">+ prompt</text>
+    <g transform="translate(74 410)">
+      <rect x="0" y="0" width="176" height="72" rx="4" fill="#101827"/>
+      <rect x="8" y="8" width="34" height="56" fill="url(#videoA)"/>
+      <rect x="45" y="8" width="34" height="56" fill="url(#videoB)"/>
+      <rect x="82" y="8" width="34" height="56" fill="url(#videoA)"/>
+      <rect x="119" y="8" width="46" height="56" fill="url(#videoB)"/>
+      <path d="M8 57 L25 35 L42 57 Z" fill="#315e7a" opacity="0.55"/>
+      <path d="M45 58 L62 36 L79 58 Z" fill="#315e7a" opacity="0.50"/>
+      <path d="M82 58 L101 32 L116 58 Z" fill="#315e7a" opacity="0.45"/>
+      <path d="M127 58 L145 34 L165 58 Z" fill="#315e7a" opacity="0.50"/>
+      <circle cx="169" cy="36" r="3.5" fill="#101827"/>
+      <circle cx="183" cy="36" r="3.5" fill="#101827"/>
+    </g>
+    <g transform="translate(72 522)">
+      <rect x="0" y="0" width="178" height="58" rx="12" fill="#ffffff" stroke="#8aa0bf" stroke-width="2"/>
+      <path d="M22 22 H154" stroke="#d0d8e4" stroke-width="4" stroke-linecap="round"/>
+      <path d="M22 40 H76 M88 40 H128" stroke="#d0d8e4" stroke-width="4" stroke-linecap="round"/>
+      <path d="M24 58 L24 76 L50 58" fill="#ffffff" stroke="#8aa0bf" stroke-width="2"/>
+    </g>
+  </g>
+
+  <path d="M292 452 H352" fill="none" stroke="#26323f" stroke-width="4" marker-end="url(#arrowDark)"/>
+
+  <!-- Prefix card -->
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="374" y="332" width="236" height="238" rx="22" fill="url(#prefixCard)" stroke="#7c67a8" stroke-width="2"/>
+    <text x="492" y="382" text-anchor="middle" class="cardTitle" fill="#312e81">Shared</text>
+    <text x="492" y="412" text-anchor="middle" class="cardTitle" fill="#312e81">real-video prefix</text>
+    <g transform="translate(414 446)">
+      <rect x="0" y="0" width="23" height="23" rx="3" fill="#c5b7df" stroke="#7c67a8"/>
+      <rect x="32" y="0" width="23" height="23" rx="3" fill="#c5b7df" stroke="#7c67a8"/>
+      <rect x="64" y="0" width="23" height="23" rx="3" fill="#c5b7df" stroke="#7c67a8"/>
+      <rect x="96" y="0" width="23" height="23" rx="3" fill="#c5b7df" stroke="#7c67a8"/>
+      <rect x="128" y="0" width="23" height="23" rx="3" fill="#c5b7df" stroke="#7c67a8"/>
+      <circle cx="170" cy="12" r="3.5" fill="#312e81"/>
+      <circle cx="184" cy="12" r="3.5" fill="#312e81"/>
+      <circle cx="198" cy="12" r="3.5" fill="#312e81"/>
+    </g>
+    <text x="492" y="512" text-anchor="middle" class="cardText">encoded once, shared by</text>
+    <text x="492" y="538" text-anchor="middle" class="cardText">teacher and student</text>
+  </g>
+
+  <!-- Split arrows -->
+  <path d="M610 451 C658 451 652 295 708 295" fill="none" stroke="#26323f" stroke-width="4" marker-end="url(#arrowDark)"/>
+  <path d="M610 451 C658 451 652 616 708 616" fill="none" stroke="#26323f" stroke-width="4" marker-end="url(#arrowDark)"/>
+
+  <!-- Teacher lane -->
+  <g class="font">
+    <rect x="690" y="142" width="1060" height="286" rx="28" fill="url(#teacherLane)" stroke="#f97316" stroke-width="2.4" stroke-dasharray="10 10"/>
+    <text x="1220" y="184" text-anchor="middle" class="laneTitle" fill="#ea580c">Teacher: cleaner context</text>
+  </g>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="728" y="214" width="300" height="158" rx="18" fill="url(#orangeCard)" stroke="#f97316" stroke-width="2"/>
+    <text x="878" y="250" text-anchor="middle" class="cardTitle">Cleaner KV cache</text>
+    <text x="878" y="280" text-anchor="middle" class="cardText">(real/future context)</text>
+    <g transform="translate(770 308)">
+      <rect x="0" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="31" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="62" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="93" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="124" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="155" y="0" width="20" height="24" rx="3" fill="#fed7aa" stroke="#f97316"/>
+      <circle cx="199" cy="12" r="3.4" fill="#431407"/>
+      <circle cx="213" cy="12" r="3.4" fill="#431407"/>
+      <circle cx="227" cy="12" r="3.4" fill="#431407"/>
+    </g>
+    <text x="878" y="352" text-anchor="middle" class="smallText">GT prefix + optional future frames</text>
+  </g>
+
+  <path d="M1034 292 H1076" fill="none" stroke="#f97316" stroke-width="4" marker-end="url(#arrowOrange)"/>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="1084" y="214" width="318" height="158" rx="18" fill="url(#orangeCard)" stroke="#f97316" stroke-width="2"/>
+    <text x="1243" y="252" text-anchor="middle" class="cardTitle">Teacher few-step</text>
+    <text x="1243" y="282" text-anchor="middle" class="cardTitle">denoising</text>
+    <g transform="translate(1136 315)">
+      <rect x="0" y="-16" width="31" height="31" rx="3" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+      <path d="M50 0 H90" stroke="#26323f" stroke-width="3" marker-end="url(#arrowDark)"/>
+      <rect x="104" y="-16" width="31" height="31" rx="3" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+      <path d="M154 0 H194" stroke="#26323f" stroke-width="3" stroke-dasharray="7 8" marker-end="url(#arrowDark)"/>
+      <rect x="208" y="-16" width="31" height="31" rx="3" fill="#fff7ed" stroke="#f97316" stroke-width="2"/>
+    </g>
+    <text x="1243" y="352" text-anchor="middle" class="smallText">same timestep state as student</text>
+  </g>
+
+  <path d="M1408 292 H1450" fill="none" stroke="#f97316" stroke-width="4" marker-end="url(#arrowOrange)"/>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="1458" y="214" width="244" height="158" rx="18" fill="url(#orangeCard)" stroke="#f97316" stroke-width="2"/>
+    <text x="1580" y="252" text-anchor="middle" class="cardTitle">Stop-gradient</text>
+    <text x="1580" y="282" text-anchor="middle" class="cardTitle">teacher target</text>
+    <g transform="translate(1510 312)">
+      <rect x="0" y="-18" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="25" y="-18" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="50" y="-18" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="0" y="7" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="25" y="7" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <rect x="50" y="7" width="20" height="20" fill="#fed7aa" stroke="#f97316"/>
+      <circle cx="94" cy="4" r="3.2" fill="#431407"/>
+      <circle cx="108" cy="4" r="3.2" fill="#431407"/>
+      <path d="M129 0 v-14 c0-13 9-22 21-22s21 9 21 22 v14" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+      <rect x="125" y="0" width="51" height="43" rx="7" fill="#ffffff" stroke="#334155" stroke-width="4"/>
+      <circle cx="151" cy="18" r="5" fill="#334155"/>
+      <path d="M151 22 v9" stroke="#334155" stroke-width="4" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Student lane -->
+  <g class="font">
+    <rect x="690" y="515" width="1060" height="314" rx="28" fill="url(#studentLane)" stroke="#2b7ec1" stroke-width="2.4" stroke-dasharray="10 10"/>
+    <text x="1220" y="798" text-anchor="middle" class="laneTitle" fill="#1d6fb8">Student: on-policy rollout</text>
+  </g>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="728" y="575" width="300" height="162" rx="18" fill="url(#blueCard)" stroke="#1d6fb8" stroke-width="2"/>
+    <text x="878" y="612" text-anchor="middle" class="cardTitle">Student KV cache</text>
+    <text x="878" y="641" text-anchor="middle" class="cardText">(self-generated history)</text>
+    <g transform="translate(770 674)">
+      <rect x="0" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <rect x="31" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <rect x="62" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <rect x="93" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <rect x="124" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <rect x="155" y="0" width="21" height="24" rx="3" fill="#bfdbfe" stroke="#1d6fb8"/>
+      <circle cx="200" cy="12" r="3.4" fill="#0f172a"/>
+      <circle cx="214" cy="12" r="3.4" fill="#0f172a"/>
+      <circle cx="228" cy="12" r="3.4" fill="#0f172a"/>
+    </g>
+    <text x="878" y="720" text-anchor="middle" class="smallText">deployment-state cache</text>
+  </g>
+
+  <path d="M1034 656 H1076" fill="none" stroke="#1d6fb8" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="1084" y="575" width="318" height="162" rx="18" fill="url(#blueCard)" stroke="#1d6fb8" stroke-width="2"/>
+    <text x="1243" y="613" text-anchor="middle" class="cardTitle">Student few-step</text>
+    <text x="1243" y="643" text-anchor="middle" class="cardTitle">denoising</text>
+    <g transform="translate(1136 681)">
+      <rect x="0" y="-16" width="31" height="31" rx="3" fill="#eff6ff" stroke="#1d6fb8" stroke-width="2"/>
+      <path d="M50 0 H90" stroke="#26323f" stroke-width="3" marker-end="url(#arrowDark)"/>
+      <rect x="104" y="-16" width="31" height="31" rx="3" fill="#eff6ff" stroke="#1d6fb8" stroke-width="2"/>
+      <path d="M154 0 H194" stroke="#26323f" stroke-width="3" stroke-dasharray="7 8" marker-end="url(#arrowDark)"/>
+      <rect x="208" y="-16" width="31" height="31" rx="3" fill="#eff6ff" stroke="#1d6fb8" stroke-width="2"/>
+    </g>
+    <text x="1243" y="720" text-anchor="middle" class="smallText">rollout state is not replaced</text>
+  </g>
+
+  <path d="M1408 656 H1450" fill="none" stroke="#1d6fb8" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="1458" y="575" width="244" height="162" rx="18" fill="url(#blueCard)" stroke="#1d6fb8" stroke-width="2"/>
+    <text x="1580" y="613" text-anchor="middle" class="cardTitle">Generated chunk</text>
+    <g transform="translate(1488 650)">
+      <rect x="0" y="0" width="178" height="57" rx="4" fill="#101827"/>
+      <rect x="7" y="7" width="38" height="43" fill="url(#videoA)"/>
+      <rect x="48" y="7" width="38" height="43" fill="url(#videoB)"/>
+      <rect x="89" y="7" width="38" height="43" fill="url(#videoA)"/>
+      <rect x="130" y="7" width="38" height="43" fill="url(#videoB)"/>
+      <path d="M7 49 L24 27 L45 49 Z" fill="#315e7a" opacity="0.55"/>
+      <path d="M48 49 L66 24 L86 49 Z" fill="#315e7a" opacity="0.50"/>
+      <path d="M89 49 L110 23 L127 49 Z" fill="#315e7a" opacity="0.45"/>
+      <path d="M132 49 L151 24 L168 49 Z" fill="#315e7a" opacity="0.50"/>
+    </g>
+    <text x="1580" y="731" text-anchor="middle" class="smallText">used to update student KV</text>
+  </g>
+
+  <!-- Student cache update loop -->
+  <path d="M1580 738 V781 H848 V746" fill="none" stroke="#1d6fb8" stroke-width="4" marker-end="url(#arrowBlue)"/>
+
+  <!-- Dense loss arrows -->
+  <g class="font">
+    <text x="1452" y="478" text-anchor="middle" font-size="31" font-weight="900" fill="#dc2626">Dense OPSD-V loss</text>
+    <text x="1452" y="510" text-anchor="middle" font-size="17" font-weight="700" fill="#991b1b">align teacher targets at the student's rollout states</text>
+  </g>
+  <path d="M1148 374 V556" fill="none" stroke="#dc2626" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+  <path d="M1208 374 V556" fill="none" stroke="#dc2626" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+  <path d="M1268 374 V556" fill="none" stroke="#dc2626" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+  <path d="M1328 374 V556" fill="none" stroke="#dc2626" stroke-width="3.5" marker-end="url(#arrowRed)"/>
+
+  <!-- Principle cards -->
+  <g class="font" filter="url(#smallShadow)">
+    <rect x="744" y="862" width="283" height="88" rx="18" fill="#ffffff" stroke="#dbe6f1"/>
+    <text x="886" y="896" text-anchor="middle" font-size="21" font-weight="900" fill="#1d6fb8">On-policy state</text>
+    <text x="886" y="926" text-anchor="middle" class="smallText">student latent + student KV</text>
+
+    <rect x="1081" y="862" width="283" height="88" rx="18" fill="#ffffff" stroke="#dbe6f1"/>
+    <text x="1223" y="896" text-anchor="middle" font-size="21" font-weight="900" fill="#ea580c">Cleaner target</text>
+    <text x="1223" y="926" text-anchor="middle" class="smallText">teacher with real/future context</text>
+
+    <rect x="1418" y="862" width="283" height="88" rx="18" fill="#ffffff" stroke="#dbe6f1"/>
+    <text x="1560" y="896" text-anchor="middle" font-size="21" font-weight="900" fill="#15803d">Long-horizon correction</text>
+    <text x="1560" y="926" text-anchor="middle" class="smallText">reduce drift without off-policy loss</text>
+  </g>
+
+  <!-- Timeline -->
+  <g class="font">
+    <path d="M132 1002 H1680" fill="none" stroke="#26323f" stroke-width="3.5" marker-end="url(#arrowDark)"/>
+    <text x="1710" y="1010" font-size="21" font-weight="800" fill="#26323f">Time</text>
+
+    <path d="M158 940 H535" fill="none" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="158" cy="940" r="7" fill="#7c3aed"/>
+    <path d="M535 930 V950" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+    <text x="346" y="980" text-anchor="middle" font-size="22" font-weight="800" fill="#6d28d9">real-video prefix</text>
+
+    <path d="M548 940 H1028" fill="none" stroke="#1d6fb8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M548 930 V950" stroke="#1d6fb8" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="1028" cy="940" r="7" fill="#1d6fb8"/>
+    <text x="788" y="980" text-anchor="middle" font-size="22" font-weight="800" fill="#1d6fb8">warm-up rollout</text>
+
+    <path d="M1044 940 H1660" fill="none" stroke="#2f8f62" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1044 930 V950" stroke="#2f8f62" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="1660" cy="940" r="7" fill="#2f8f62"/>
+    <text x="1352" y="980" text-anchor="middle" font-size="22" font-weight="800" fill="#2f8f62">supervised OPSD-V chunks</text>
+  </g>
+</svg>
