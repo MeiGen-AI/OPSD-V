@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260709-overlay-hero">
+  <link rel="stylesheet" href="styles.css?v=20260710-clean-poster-mosaic">
 </head>
 <body>
   <div class="page-grain" aria-hidden="true"></div>
@@ -40,7 +40,7 @@
       <div class="hero-stage reveal-item" aria-label="OPSD-V poster mosaic hero">
         <div class="hero-showcase" aria-hidden="true">
           <figure class="hero-mosaic">
-            <img src="assets/images/opsdv-poster-mosaic-hero-exact-logo.jpg" alt="" fetchpriority="high">
+            <img src="assets/images/opsdv-poster-mosaic-clean.jpg" alt="" fetchpriority="high">
           </figure>
         </div>
 
@@ -139,15 +139,189 @@
       <div class="shell">
         <h2 class="section-title">Motivation</h2>
         <div class="motivation-copy">
-          <p>The top of the figure positions OPSD-V after few-step distillation: starting from a DMD/Self-Forcing-trained causal video generator, we continue training the same few-step model instead of changing its deployment-time sampler. The central difficulty is autoregressive cache degradation. Every generated chunk is written back into the KV cache, so its errors become part of the temporal state used to produce all later chunks.</p>
+          <p>OPSD-V starts after few-step distillation: from a DMD/Self-Forcing-trained causal video generator, we continue training the same few-step model instead of changing its deployment-time sampler. The central difficulty is autoregressive cache degradation. Every generated chunk is written back into the KV cache, so its errors become part of the temporal state used to produce all later chunks.</p>
           <div class="insight-card">
             <span>Design principle</span>
             <strong>Keep the student on-policy. Give the teacher a cleaner view.</strong>
           </div>
         </div>
-        <figure class="paper-figure paper-figure-overview">
-          <img src="assets/images/overview.jpg" alt="Overview of OPSD-V and a training-free KV-cache intervention on LongLive." loading="lazy">
-          <figcaption>The lower panel isolates the role of temporal context without any additional training. Both LongLive rollouts use the same model and begin from the same real-video first chunk. In the second row, only older KV-cache history is replaced by context from the corresponding real video, while the most recent chunk remains model-generated to preserve autoregressive continuation. Its immediate improvement shows that accumulated cache degradation, rather than the initial condition alone, is a major source of long-horizon failure.</figcaption>
+        <div class="cache-diagnosis" aria-label="Training-free LongLive cache diagnosis">
+          <div class="cache-diagnosis-head">
+            <div>
+              <span class="section-kicker">Training-free diagnostic</span>
+              <h3>Cleaner cache improves LongLive before training.</h3>
+            </div>
+            <p>Same checkpoint, same first GT chunk, same sampler. Left: original generated-cache rollout. Right: data-assisted cache rollout.</p>
+          </div>
+          <div class="cache-diagnosis-stage">
+            <button class="cache-page-arrow cache-page-arrow-prev" type="button" aria-label="Show previous training-free diagnosis example">&#8249;</button>
+            <article class="cache-diagnosis-case is-active" data-cache-case="1">
+              <header>
+                <div class="cache-case-title">
+                  <span>Example 01</span>
+                  <h4>Aerial beach scene</h4>
+                </div>
+                <button class="compare-button cache-compare-button" type="button" aria-label="Open fullscreen comparison for aerial beach scene">
+                  <span aria-hidden="true">&#x26F6;</span> Side-by-side fullscreen
+                </button>
+              </header>
+              <div class="cache-video-frame">
+                <div class="video-pair cache-video-pair">
+                  <div class="video-cell">
+                    <span class="video-label">Original inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000002-generated.jpg" data-src="assets/videos/motivation-cache/000002-generated.mp4" aria-label="Original generated-cache LongLive rollout for aerial beach scene"></video>
+                  </div>
+                  <div class="video-cell is-ours">
+                    <span class="video-label">Data-cache inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000002-gt.jpg" data-src="assets/videos/motivation-cache/000002-gt.mp4" aria-label="Data-cache LongLive rollout for aerial beach scene"></video>
+                  </div>
+                  <div class="video-cell is-reference">
+                    <span class="video-label">GT reference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000002-reference.jpg" data-src="assets/videos/motivation-cache/000002-reference.mp4" data-playback-rate="0.535" aria-label="Ground-truth reference video for aerial beach scene"></video>
+                  </div>
+                </div>
+              </div>
+              <p class="cache-improvement"><strong>Improvement.</strong> Stronger motion dynamics, faster camera movement, and visibly cleaner background detail.</p>
+              <div class="prompt-preview cache-prompt-preview">
+                <p>An aerial view of a beach on a clear day, with turquoise water, pale sand, coastal buildings, palm trees, and crowds along the shoreline.</p>
+                <button class="prompt-button cache-prompt-button" type="button" data-cache-prompt="1" aria-label="Read full prompt for aerial beach scene">Full prompt</button>
+              </div>
+            </article>
+            <article class="cache-diagnosis-case" data-cache-case="2">
+              <header>
+                <div class="cache-case-title">
+                  <span>Example 02</span>
+                  <h4>Motorcyclist gesture</h4>
+                </div>
+                <button class="compare-button cache-compare-button" type="button" aria-label="Open fullscreen comparison for motorcyclist gesture">
+                  <span aria-hidden="true">&#x26F6;</span> Side-by-side fullscreen
+                </button>
+              </header>
+              <div class="cache-video-frame">
+                <div class="video-pair cache-video-pair">
+                  <div class="video-cell">
+                    <span class="video-label">Original inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000003-generated.jpg" data-src="assets/videos/motivation-cache/000003-generated.mp4" aria-label="Original generated-cache LongLive rollout for motorcyclist gesture"></video>
+                  </div>
+                  <div class="video-cell is-ours">
+                    <span class="video-label">Data-cache inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000003-gt.jpg" data-src="assets/videos/motivation-cache/000003-gt.mp4" aria-label="Data-cache LongLive rollout for motorcyclist gesture"></video>
+                  </div>
+                  <div class="video-cell is-reference">
+                    <span class="video-label">GT reference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000003-reference.jpg" data-src="assets/videos/motivation-cache/000003-reference.mp4" data-playback-rate="0.667" aria-label="Ground-truth reference video for motorcyclist gesture"></video>
+                  </div>
+                </div>
+              </div>
+              <p class="cache-improvement"><strong>Improvement.</strong> Stronger task dynamics in the rider's gesture, with more stable trees and background structure later in the rollout.</p>
+              <div class="prompt-preview cache-prompt-preview">
+                <p>A person wearing a black T-shirt with the text "Bright Eyes" and a white helmet with a reflective visor is riding a motorcycle.</p>
+                <button class="prompt-button cache-prompt-button" type="button" data-cache-prompt="2" aria-label="Read full prompt for motorcyclist gesture">Full prompt</button>
+              </div>
+            </article>
+            <article class="cache-diagnosis-case" data-cache-case="3">
+              <header>
+                <div class="cache-case-title">
+                  <span>Example 03</span>
+                  <h4>Bird in rocky stream</h4>
+                </div>
+                <button class="compare-button cache-compare-button" type="button" aria-label="Open fullscreen comparison for bird in rocky stream">
+                  <span aria-hidden="true">&#x26F6;</span> Side-by-side fullscreen
+                </button>
+              </header>
+              <div class="cache-video-frame">
+                <div class="video-pair cache-video-pair">
+                  <div class="video-cell">
+                    <span class="video-label">Original inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000004-generated.jpg" data-src="assets/videos/motivation-cache/000004-generated.mp4" aria-label="Original generated-cache LongLive rollout for bird in rocky stream"></video>
+                  </div>
+                  <div class="video-cell is-ours">
+                    <span class="video-label">Data-cache inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000004-gt.jpg" data-src="assets/videos/motivation-cache/000004-gt.mp4" aria-label="Data-cache LongLive rollout for bird in rocky stream"></video>
+                  </div>
+                  <div class="video-cell is-reference">
+                    <span class="video-label">GT reference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000004-reference.jpg" data-src="assets/videos/motivation-cache/000004-reference.mp4" data-playback-rate="0.535" aria-label="Ground-truth reference video for bird in rocky stream"></video>
+                  </div>
+                </div>
+              </div>
+              <p class="cache-improvement"><strong>Improvement.</strong> The grassy background remains much clearer instead of dissolving during the long rollout.</p>
+              <div class="prompt-preview cache-prompt-preview">
+                <p>A small bird with dark plumage, likely a crow or raven, is seen in a shallow, rocky stream surrounded by lush greenery.</p>
+                <button class="prompt-button cache-prompt-button" type="button" data-cache-prompt="3" aria-label="Read full prompt for bird in rocky stream">Full prompt</button>
+              </div>
+            </article>
+            <article class="cache-diagnosis-case" data-cache-case="4">
+              <header>
+                <div class="cache-case-title">
+                  <span>Example 04</span>
+                  <h4>Mountain village flyover</h4>
+                </div>
+                <button class="compare-button cache-compare-button" type="button" aria-label="Open fullscreen comparison for mountain village flyover">
+                  <span aria-hidden="true">&#x26F6;</span> Side-by-side fullscreen
+                </button>
+              </header>
+              <div class="cache-video-frame">
+                <div class="video-pair cache-video-pair">
+                  <div class="video-cell">
+                    <span class="video-label">Original inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000006-generated.jpg" data-src="assets/videos/motivation-cache/000006-generated.mp4" aria-label="Original generated-cache LongLive rollout for mountain village flyover"></video>
+                  </div>
+                  <div class="video-cell is-ours">
+                    <span class="video-label">Data-cache inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000006-gt.jpg" data-src="assets/videos/motivation-cache/000006-gt.mp4" aria-label="Data-cache LongLive rollout for mountain village flyover"></video>
+                  </div>
+                  <div class="video-cell is-reference">
+                    <span class="video-label">GT reference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000006-reference.jpg" data-src="assets/videos/motivation-cache/000006-reference.mp4" data-playback-rate="0.535" aria-label="Ground-truth reference video for mountain village flyover"></video>
+                  </div>
+                </div>
+              </div>
+              <p class="cache-improvement"><strong>Improvement.</strong> Faster camera motion and cleaner, more coherent house structures across the village scene.</p>
+              <div class="prompt-preview cache-prompt-preview">
+                <p>Aerial views of a traditional village nestled in a mountainous region, featuring white buildings with black roofs.</p>
+                <button class="prompt-button cache-prompt-button" type="button" data-cache-prompt="4" aria-label="Read full prompt for mountain village flyover">Full prompt</button>
+              </div>
+            </article>
+            <article class="cache-diagnosis-case" data-cache-case="5">
+              <header>
+                <div class="cache-case-title">
+                  <span>Example 05</span>
+                  <h4>Forested road aerial view</h4>
+                </div>
+                <button class="compare-button cache-compare-button" type="button" aria-label="Open fullscreen comparison for forested road aerial view">
+                  <span aria-hidden="true">&#x26F6;</span> Side-by-side fullscreen
+                </button>
+              </header>
+              <div class="cache-video-frame">
+                <div class="video-pair cache-video-pair">
+                  <div class="video-cell">
+                    <span class="video-label">Original inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000007-generated.jpg" data-src="assets/videos/motivation-cache/000007-generated.mp4" aria-label="Original generated-cache LongLive rollout for forested road aerial view"></video>
+                  </div>
+                  <div class="video-cell is-ours">
+                    <span class="video-label">Data-cache inference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000007-gt.jpg" data-src="assets/videos/motivation-cache/000007-gt.mp4" aria-label="Data-cache LongLive rollout for forested road aerial view"></video>
+                  </div>
+                  <div class="video-cell is-reference">
+                    <span class="video-label">GT reference</span>
+                    <video muted loop playsinline controls preload="none" poster="assets/videos/motivation-cache/000007-reference.jpg" data-src="assets/videos/motivation-cache/000007-reference.mp4" data-playback-rate="0.535" aria-label="Ground-truth reference video for forested road aerial view"></video>
+                  </div>
+                </div>
+              </div>
+              <p class="cache-improvement"><strong>Improvement.</strong> Faster aerial motion, with trees and forest background becoming noticeably sharper and more stable.</p>
+              <div class="prompt-preview cache-prompt-preview">
+                <p>The video provides an aerial view of a forested area with a winding road cutting through it.</p>
+                <button class="prompt-button cache-prompt-button" type="button" data-cache-prompt="5" aria-label="Read full prompt for forested road aerial view">Full prompt</button>
+              </div>
+            </article>
+            <button class="cache-page-arrow cache-page-arrow-next" type="button" aria-label="Show next training-free diagnosis example">&#8250;</button>
+          </div>
+          <div class="cache-page-count" aria-live="polite">1 / 5</div>
+        </div>
+        <figure class="paper-figure paper-figure-overview motivation-diagram">
+          <img src="assets/images/projectpage_motivation.jpg" alt="OPSD-V motivation diagram contrasting generated KV cache with data-assisted KV cache." loading="lazy">
+          <figcaption>The videos above isolate temporal context at inference time, without any extra training or checkpoint update. Both LongLive rollouts use the same original model, sampler, and real-video first chunk. The only change in the improved rollout is that older KV-cache history is refreshed from the corresponding real video, while the latest chunk remains model-generated to preserve autoregressive continuation. The immediate gain reveals accumulated generated-cache drift as a primary source of long-horizon failure, and motivates OPSD-V's training objective: learn under generated-cache states while being corrected by a cleaner data-assisted teacher context.</figcaption>
         </figure>
       </div>
     </section>
@@ -359,7 +533,7 @@
               <article class="ablation-video-case">
                 <header class="ablation-video-case-head">
                   <div>
-                    <span>Debug step 56</span>
+                    <span>Example 01</span>
                     <h3>Training rollout</h3>
                   </div>
                   <button class="compare-button ablation-compare-button" type="button" aria-label="Open side-by-side fullscreen comparison for training rollout at debug step 56">
@@ -386,7 +560,7 @@
               <article class="ablation-video-case">
                 <header class="ablation-video-case-head">
                   <div>
-                    <span>Debug step 80</span>
+                    <span>Example 02</span>
                     <h3>Training rollout</h3>
                   </div>
                   <button class="compare-button ablation-compare-button" type="button" aria-label="Open side-by-side fullscreen comparison for training rollout at debug step 80">
@@ -465,6 +639,6 @@
     </div>
   </dialog>
 
-  <script type="module" src="app.js?v=20260708-institution-nav"></script>
+  <script type="module" src="app.js?v=20260710-clean-poster-mosaic"></script>
 </body>
 </html>

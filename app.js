@@ -52,6 +52,28 @@ const GALLERY_DEPRIORITY_SLUGS = [
   "sf-mei-000069",
   "sf-mei-000075",
 ];
+const MOTIVATION_PROMPTS = {
+  1: {
+    title: "Aerial beach scene",
+    prompt: "An aerial view of a beach scene on a clear day, with a bright blue sky and a few scattered white clouds. Crowds fill the beach: some people rest under umbrellas while others walk along the shoreline. The water is clear turquoise, the sand is pale beige, and tall buildings line the coast, including a prominent white building. Palm trees surround the beach as gentle waves wash onto the shore.",
+  },
+  2: {
+    title: "Motorcyclist gesture",
+    prompt: "A person wearing a black T-shirt with the text \"Bright Eyes\" and a white helmet with a reflective visor is riding a motorcycle. The background shows a suburban area with trees, houses, and power lines under a partly cloudy sky. The person raises their arms and then lowers them while riding.",
+  },
+  3: {
+    title: "Bird in rocky stream",
+    prompt: "A small bird with dark plumage, likely a crow or raven, is seen in a shallow, rocky stream surrounded by lush greenery. The bird is initially standing on a rock in the stream, then it moves through the water, splashing and creating ripples. The background consists of dense foliage and moss-covered rocks, with sunlight filtering through the trees and casting a warm glow on the scene. The bird continues to move through the water, occasionally flapping its wings and adjusting its position.",
+  },
+  4: {
+    title: "Mountain village flyover",
+    prompt: "Aerial views of a traditional village nestled in a mountainous region, featuring white buildings with black roofs. The village is surrounded by lush greenery and autumn-colored trees, with large trees displaying vibrant orange and yellow leaves. The village is densely packed with closely spaced buildings, some with small courtyards or gardens. The surrounding landscape includes rolling hills and fields, with a clear sky above. The video captures the village from various angles, showing the layout and architecture of the buildings, as well as the natural environment surrounding it.",
+  },
+  5: {
+    title: "Forested road aerial view",
+    prompt: "The video provides an aerial view of a forested area with a winding road cutting through it. The road is surrounded by dense greenery, with various shades of green indicating different types of trees and vegetation. A few houses are visible, with one having a dark roof and another with a lighter-colored roof. The houses are nestled among the trees, with driveways leading up to them. The road curves and bends, creating a path that weaves through the forest. The colors are primarily green from the trees, with the road appearing as a dark, linear path. The video captures the layout and structure of the area, including the road, houses, and surrounding forest.",
+  },
+};
 
 const state = {
   backbone: "all",
@@ -211,44 +233,56 @@ function makeCard(item) {
 }
 
 function setupSynchronizedVideos(card) {
+  if (!card) return;
   const videos = [...card.querySelectorAll("video")];
   let syncing = false;
 
-  const otherVideo = (video) => videos.find((candidate) => candidate !== video);
+  const getPlaybackRate = (video) => {
+    const configuredRate = Number(video.dataset.playbackRate);
+    if (Number.isFinite(configuredRate) && configuredRate > 0) return configuredRate;
+    return video.playbackRate || 1;
+  };
+
+  const syncPeerTime = (source, peer) => {
+    const sourceTimelineTime = source.currentTime / getPlaybackRate(source);
+    const peerTime = sourceTimelineTime * getPlaybackRate(peer);
+    if (Number.isFinite(peerTime) && Math.abs(peer.currentTime - peerTime) > 0.2) {
+      peer.currentTime = Math.min(peer.duration || peerTime, peerTime);
+    }
+  };
 
   videos.forEach((video) => {
     video.addEventListener("play", async () => {
       if (syncing) return;
-      const peer = otherVideo(video);
+      const peers = videos.filter((candidate) => candidate !== video);
       syncing = true;
-      if (Math.abs(peer.currentTime - video.currentTime) > 0.2) peer.currentTime = video.currentTime;
-      try {
-        await peer.play();
-      } catch (error) {
-        // The browser can block programmatic playback until the second video is loaded.
-      }
+      peers.forEach((peer) => syncPeerTime(video, peer));
+      await Promise.allSettled(peers.map((peer) => peer.play()));
       syncing = false;
     });
 
     video.addEventListener("pause", () => {
       if (syncing) return;
-      const peer = otherVideo(video);
+      const peers = videos.filter((candidate) => candidate !== video);
       syncing = true;
-      peer.pause();
+      peers.forEach((peer) => peer.pause());
       syncing = false;
     });
 
     video.addEventListener("seeking", () => {
       if (syncing) return;
-      const peer = otherVideo(video);
+      const peers = videos.filter((candidate) => candidate !== video);
       syncing = true;
-      if (Number.isFinite(video.currentTime)) peer.currentTime = video.currentTime;
+      if (Number.isFinite(video.currentTime)) peers.forEach((peer) => syncPeerTime(video, peer));
       syncing = false;
     });
 
     video.addEventListener("ratechange", () => {
-      const peer = otherVideo(video);
-      if (peer.playbackRate !== video.playbackRate) peer.playbackRate = video.playbackRate;
+      if (video.dataset.playbackRate) return;
+      videos.forEach((peer) => {
+        if (peer === video || peer.dataset.playbackRate) return;
+        if (peer.playbackRate !== video.playbackRate) peer.playbackRate = video.playbackRate;
+      });
     });
   });
 }
@@ -276,6 +310,69 @@ function setupAblationVideos() {
       });
     });
   });
+}
+
+function setupMotivationCacheStudy() {
+  const cases = [...document.querySelectorAll(".cache-diagnosis-case")];
+  const previousButton = document.querySelector(".cache-page-arrow-prev");
+  const nextButton = document.querySelector(".cache-page-arrow-next");
+  const pageCount = document.querySelector(".cache-page-count");
+  let activeIndex = 0;
+
+  cases.forEach((caseCard) => setupSynchronizedVideos(caseCard.querySelector(".cache-video-pair")));
+
+  const showCase = (index) => {
+    activeIndex = (index + cases.length) % cases.length;
+    cases.forEach((caseCard, caseIndex) => {
+      const active = caseIndex === activeIndex;
+      caseCard.classList.toggle("is-active", active);
+      if (!active) {
+        caseCard.querySelectorAll("video").forEach((video) => video.pause());
+      } else {
+        caseCard.querySelectorAll("video[data-src]").forEach(loadVideo);
+      }
+    });
+
+    if (pageCount) pageCount.textContent = `${activeIndex + 1} / ${cases.length}`;
+  };
+
+  previousButton?.addEventListener("click", () => showCase(activeIndex - 1));
+  nextButton?.addEventListener("click", () => showCase(activeIndex + 1));
+
+  document.querySelectorAll(".cache-compare-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const caseCard = button.closest(".cache-diagnosis-case");
+      const pair = caseCard.querySelector(".cache-video-pair");
+      const videos = [...pair.querySelectorAll("video")];
+      const labels = [...pair.querySelectorAll(".video-label")].map((label) => label.textContent.trim());
+      const caseId = caseCard.querySelector(".cache-case-title span")?.textContent.trim() || "LongLive";
+      const caseTitle = caseCard.querySelector("h4")?.textContent.trim() || "Cache diagnosis";
+      openVideoComparison({
+        kicker: "Training-free LongLive cache diagnosis",
+        title: `${caseId} — ${caseTitle}`,
+        leftLabel: labels[0] || "Original inference",
+        rightLabel: labels[1] || "Data-cache inference",
+        leftVideo: getVideoSource(videos[0]),
+        rightVideo: getVideoSource(videos[1]),
+      });
+    });
+  });
+
+  document.querySelectorAll(".cache-prompt-button").forEach((button) => {
+    button.addEventListener("click", () => openMotivationPrompt(button.dataset.cachePrompt));
+  });
+
+  if (cases.length) showCase(0);
+}
+
+function openMotivationPrompt(promptId) {
+  const item = MOTIVATION_PROMPTS[promptId];
+  if (!item) return;
+  activePrompt = item.prompt;
+  dialogKicker.textContent = "Training-free LongLive cache diagnosis";
+  dialogTitle.textContent = item.title;
+  dialogPrompt.textContent = item.prompt;
+  promptDialog.showModal();
 }
 
 function formatComparisonTitle(sectionTitle, caseTitle) {
@@ -483,6 +580,16 @@ function loadVideo(video) {
   if (!video.dataset.src) return;
   video.src = video.dataset.src;
   video.preload = "metadata";
+  if (video.dataset.playbackRate) {
+    const playbackRate = Number(video.dataset.playbackRate);
+    if (Number.isFinite(playbackRate) && playbackRate > 0) {
+      const applyPlaybackRate = () => {
+        video.playbackRate = playbackRate;
+      };
+      applyPlaybackRate();
+      video.addEventListener("loadedmetadata", applyPlaybackRate, { once: true });
+    }
+  }
   delete video.dataset.src;
   video.load();
 }
@@ -666,6 +773,7 @@ renderProjectMeta();
 renderCases();
 renderMetrics();
 setupAblationVideos();
+setupMotivationCacheStudy();
 setupFilters();
 setupPromptDialog();
 setupComparisonDialog();
