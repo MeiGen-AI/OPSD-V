@@ -38,7 +38,7 @@
 </p>
 
 <p align="center">
-  <a href="https://kumapowerliu.github.io/opsd-v/assets/opsdv.pdf">
+  <a href="https://kumapowerliu.github.io/OPSD-V/assets/opsdv.pdf">
     <img alt="Paper" src="https://img.shields.io/badge/Paper-PDF-bc6c25?logo=adobeacrobatreader&logoColor=white">
   </a>
   <a href="https://kumapowerliu.github.io/OPSD-V/">
@@ -131,7 +131,17 @@ pip install opencv-python
 
 ## Checkpoints
 
-Place the official Wan2.1-T2V-1.3B files under:
+Download the official Wan2.1-T2V-1.3B backbone from Hugging Face and place it
+under `checkpoints/Wan2.1-T2V-1.3B/`:
+
+```bash
+mkdir -p checkpoints
+hf download Wan-AI/Wan2.1-T2V-1.3B \
+  --local-dir checkpoints/Wan2.1-T2V-1.3B
+```
+
+The directory should contain the Wan transformer, VAE, T5 encoder, tokenizer,
+and model config files, e.g.:
 
 ```text
 checkpoints/Wan2.1-T2V-1.3B/
@@ -155,7 +165,22 @@ or through an environment variable:
 export WAN_MODEL_ROOT=/path/to/Wan2.1-T2V-1.3B
 ```
 
-The provided configs expect the following project checkpoints:
+Download the OPSD-V released checkpoints into `checkpoints/`:
+
+```bash
+hf download MeiGen-AI/OPSD-V \
+  checkpoints/longlive_base.pt \
+  checkpoints/longlive_lora.pt \
+  checkpoints/opsdv_longlive_lora.pt \
+  checkpoints/self_forcing_dmd_ema_as_generator.pt \
+  checkpoints/opsdv_self_forcing_lora.pt \
+  --local-dir .
+```
+
+If your environment has not authenticated with Hugging Face yet, run
+`hf auth login` first.
+
+After downloading, the provided configs expect:
 
 | File | Used by | Meaning |
 | --- | --- | --- |

@@ -19,3 +19,4 @@ imageio>=2.34.0
 imageio-ffmpeg>=0.5.1
 packaging>=24.0
 safetensors>=0.4.5
+huggingface_hub>=0.27.0
