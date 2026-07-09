@@ -209,6 +209,10 @@ the generated cache history. If replacing only older cache history improves the
 rollout without any training, it supports the motivation for using real
 long-video context as cleaner teacher supervision during OPSD-V post-training.
 
+<p align="center">
+  <img src="assets/gt-cache-diagnostic.gif" alt="Training-free GT-cache diagnostic: generated cache vs data-assisted cache" width="92%">
+</p>
+
 For LongLive, the original model uses its released LoRA adapter:
 
 ```bash
