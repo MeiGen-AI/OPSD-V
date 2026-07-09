@@ -426,6 +426,16 @@ CUDA_VISIBLE_DEVICES=0 python inference.py \
   --per_prompt_seed
 ```
 
+## Future Work
+
+OPSD-V explicitly uses real long-video data as privileged temporal context for
+post-training. Our current experiments are intentionally modest in scale: about
+3,800 one-minute videos, 24 H800 GPUs, and a short continued-training schedule.
+Scaling the amount and diversity of real long-video data, increasing training
+compute, or designing stronger teacher-cache policies may further improve
+long-horizon stability and motion dynamics. We leave this data-and-compute
+scaling direction as an important avenue for future exploration.
+
 ## Citation
 
 ```bibtex
