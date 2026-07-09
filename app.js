@@ -711,7 +711,6 @@ function renderMetrics() {
       <td class="${row.best.includes("quality") ? "best-value" : ""}">${row.quality}</td>
       <td class="${row.best.includes("dynamics") ? "best-value" : ""}">${row.dynamics}</td>
       <td class="${row.best.includes("semantic") ? "best-value" : ""}">${row.semantic}</td>
-      <td>${row.userPreference}</td>
     </tr>
   `).join("");
 }

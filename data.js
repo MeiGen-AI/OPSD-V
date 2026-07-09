@@ -173,10 +173,10 @@ export const categoryMeta = {
 };
 
 export const metrics = [
-  { method: "LongLive", params: "1.3B", nfe: "4", quality: "0.8138", dynamics: "0.5012", semantic: "0.4911", userPreference: "--", best: ["semantic"] },
-  { method: "LongLive + OPSD-V", params: "1.3B", nfe: "4", quality: "0.8242", dynamics: "0.5890", semantic: "0.4904", userPreference: "--", best: ["quality", "dynamics"], ours: true },
-  { method: "Self-Forcing", params: "1.3B", nfe: "4", quality: "0.8259", dynamics: "0.6218", semantic: "0.4897", userPreference: "--", best: ["semantic"] },
-  { method: "Self-Forcing + OPSD-V", params: "1.3B", nfe: "4", quality: "0.8389", dynamics: "0.6570", semantic: "0.4864", userPreference: "--", best: ["quality", "dynamics"], ours: true },
+  { method: "LongLive", params: "1.3B", nfe: "4", quality: "0.8138", dynamics: "0.5012", semantic: "0.4911", best: ["semantic"] },
+  { method: "LongLive + OPSD-V", params: "1.3B", nfe: "4", quality: "0.8242", dynamics: "0.5890", semantic: "0.4904", best: ["quality", "dynamics"], ours: true },
+  { method: "Self-Forcing", params: "1.3B", nfe: "4", quality: "0.8259", dynamics: "0.6218", semantic: "0.4897", best: ["semantic"] },
+  { method: "Self-Forcing + OPSD-V", params: "1.3B", nfe: "4", quality: "0.8389", dynamics: "0.6570", semantic: "0.4864", best: ["quality", "dynamics"], ours: true },
 ];
 
 export const bibtex = `@article{liu2026opsdv,
