@@ -49,9 +49,9 @@
   </a>
 </p>
 
-OPSD-V is a cache-aware on-policy self-distillation framework for continued post-training of few-step autoregressive video diffusion generators. It keeps the student on the exact rollout states it will visit at deployment, while a cleaner data-assisted teacher provides dense velocity supervision over the same denoising trajectory and temporal positions.
+OPSD-V is an on-policy self-distillation paradigm for post-training few-step autoregressive video diffusion models. It targets long-horizon error accumulation and weakened motion dynamics in distilled AR video generators while preserving the original few-step inference path. The student follows the exact deployment rollout, generating each chunk from its own evolving KV cache, while the teacher is evaluated at the same student-visited denoising states with a cleaner AR-consistent temporal cache built from real long-video context. This provides dense trajectory-level velocity supervision and improves long-horizon visual quality and motion dynamics without changing the sampler, number of denoising steps, or inference-time cache mechanism.
 
-This release contains the training and inference code for OPSD-V. Checkpoints and datasets are not bundled.
+This repository contains the training and inference code for OPSD-V.
 
 <p align="center">
   <img src="assets/motivation.jpg" alt="OPSD-V motivation" width="92%">
