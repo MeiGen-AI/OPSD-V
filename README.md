@@ -291,6 +291,8 @@ CUDA_VISIBLE_DEVICES=0 python inference.py \
 
 `--per_prompt_seed` derives an independent deterministic noise seed from `(seed, prompt_index)`. This is useful for benchmarking because resuming a partially completed output folder will not shift the noise assigned to later prompts.
 
+The text-prompt commands above run the cache-aware OPSD-V inference path, update the autoregressive cache with generated chunks, use relative-sink cache handling, and save videos at 16 FPS.
+
 For LMDB inference with precomputed embeddings and optional real-video latents, add `--use_lmdb`:
 
 ```bash
@@ -320,15 +322,6 @@ python tools/merge_lora_to_generator.py \
 ```
 
 Add `--use_lora_ema` to merge the teacher/EMA branch when it is present.
-
-## Practical Notes
-
-- `--use_lmdb_pipeline` selects the cache-aware inference pipeline even for plain text prompts.
-- `--use_lmdb` means the input itself is an LMDB dataset.
-- `--lmdb_cache_update_source generated` is the standard deployment mode.
-- `--lmdb_use_relative_sink` should be enabled when comparing with the training configs above.
-- Generated videos are saved at 16 FPS.
-- Checkpoints, datasets, logs, and outputs are ignored by `.gitignore`.
 
 ## Citation
 
