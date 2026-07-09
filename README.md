@@ -327,6 +327,78 @@ CUDA_VISIBLE_DEVICES=0 python inference.py \
 
 Arguments that expose GT cache replacement or future GT context are diagnostic tools, not the standard open-ended generation setting.
 
+### Training-free GT-cache diagnostic
+
+OPSD-V also includes a simple diagnostic mode that does not train or load an
+OPSD-V adapter. Given an LMDB containing a real video latent and its prompt, the
+original generator can be run twice with the same seed:
+
+- `--lmdb_cache_update_source generated`: the deployed setting, where generated
+  chunks are written back into the KV cache.
+- `--lmdb_cache_update_source gt`: a cache-intervention setting, where older KV
+  history is refreshed using corresponding real-video chunks while the latest
+  generated chunk is kept for autoregressive continuation.
+
+This gives an intuitive test for whether long-horizon degradation is caused by
+the generated cache history. If replacing only older cache history improves the
+rollout without any training, it supports the motivation for using real
+long-video context as cleaner teacher supervision during OPSD-V post-training.
+
+For LongLive, the original model uses its released LoRA adapter:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_longlive_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/longlive_generated_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source generated \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_longlive_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/longlive_gt_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source gt \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+```
+
+For Self-Forcing, the original checkpoint is loaded without any LoRA adapter:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_self_forcing_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/self_forcing_generated_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source generated \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+
+CUDA_VISIBLE_DEVICES=0 python inference.py \
+  --config_path configs/inference_self_forcing_original.yaml \
+  --data_path data/eval.lmdb \
+  --output_folder outputs/self_forcing_gt_cache \
+  --num_output_frames 243 \
+  --use_lmdb \
+  --lmdb_use_gt_first_chunk \
+  --lmdb_cache_update_source gt \
+  --lmdb_use_relative_sink \
+  --per_prompt_seed
+```
+
+The `gt` setting is a diagnostic intervention, not the standard open-ended
+generation protocol, because it requires real-video latents in the LMDB.
+
 ## Citation
 
 ```bibtex

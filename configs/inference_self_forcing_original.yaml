@@ -1,0 +1,14 @@
+generator_ckpt: checkpoints/self_forcing_dmd_ema_as_generator.pt
+
+denoising_step_list: [1000, 750, 500, 250]
+warp_denoising_step: true
+num_frame_per_block: 3
+model_name: Wan2.1-T2V-1.3B
+model_kwargs:
+  model_root: checkpoints/Wan2.1-T2V-1.3B
+  local_attn_size: 12
+  timestep_shift: 5.0
+  sink_size: 3
+
+context_noise: 0
+use_ema: false
