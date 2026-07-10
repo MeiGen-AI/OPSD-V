@@ -345,23 +345,26 @@ button {
 }
 
 .hero-stage .button {
-  border-color: rgba(255, 253, 248, 0.46);
+  border-color: rgba(255, 253, 248, 0.42);
   color: var(--white);
-  background: rgba(255, 253, 248, 0.12);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.18), rgba(255, 253, 248, 0.08));
+  box-shadow: inset 0 1px 0 rgba(255, 253, 248, 0.22), 0 12px 28px rgba(3, 16, 17, 0.18);
+  backdrop-filter: blur(16px) saturate(1.14);
 }
 
 .hero-stage .button-primary {
-  color: #09231e;
-  border-color: rgba(255, 253, 248, 0.88);
-  background: rgba(255, 253, 248, 0.9);
+  color: var(--white);
+  border-color: rgba(244, 223, 173, 0.7);
+  background: linear-gradient(180deg, rgba(244, 223, 173, 0.24), rgba(255, 253, 248, 0.1));
+  box-shadow: inset 0 1px 0 rgba(255, 253, 248, 0.28), 0 14px 32px rgba(3, 16, 17, 0.2);
 }
 
 .hero-stage .button-secondary:hover,
 .hero-stage .button-primary:hover {
-  color: #09231e;
+  color: var(--white);
   border-color: rgba(244, 223, 173, 0.92);
-  background: rgba(244, 223, 173, 0.92);
+  background: linear-gradient(180deg, rgba(244, 223, 173, 0.32), rgba(255, 253, 248, 0.14));
+  box-shadow: inset 0 1px 0 rgba(255, 253, 248, 0.34), 0 18px 38px rgba(3, 16, 17, 0.24);
 }
 
 .button {

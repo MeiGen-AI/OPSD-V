@@ -1,4 +1,4 @@
-import { bibtex, categoryMeta, metrics, project } from "./data.js?v=20260708-affiliation-order";
+import { bibtex, categoryMeta, metrics, project } from "./data.js?v=20260710-arxiv-glass-buttons";
 import { cases } from "./cases.generated.js?v=20260706-readable-titles";
 
 const PAGE_SIZE = 6;

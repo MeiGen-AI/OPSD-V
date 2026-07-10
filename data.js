@@ -2,7 +2,7 @@ export const project = {
   title: "OPSD-V",
   subtitle: "On-Policy Self-Distillation for Post-Training Few-Step Autoregressive Video Generators",
   venue: "Project Page",
-  paperUrl: "assets/opsdv.pdf",
+  paperUrl: "https://arxiv.org/abs/2607.08766",
   codeUrl: "https://github.com/MeiGen-AI/OPSD-V",
   projectUrl: "https://meigen-ai.github.io/OPSD-V/",
   authors: [
