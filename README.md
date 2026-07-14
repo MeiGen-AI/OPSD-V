@@ -34,6 +34,7 @@
   <a href="#checkpoints">Checkpoints</a> |
   <a href="#training">Training</a> |
   <a href="#inference">Inference</a> |
+  <a href="#wechat-group">WeChat Group</a> |
   <a href="#citation">Citation</a>
 </p>
 
@@ -50,6 +51,16 @@
   <a href="LICENSE">
     <img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-18372f">
   </a>
+</p>
+
+## WeChat Group
+
+<p align="center">
+  <img src="assets/wechat-group.jpeg" alt="OPSD-V WeChat discussion group QR code" width="360">
+</p>
+
+<p align="center">
+  Scan the QR code to join the OPSD-V discussion group. The code is valid until July 21, 2026.
 </p>
 
 OPSD-V is an on-policy self-distillation paradigm for post-training few-step autoregressive video diffusion models. It targets long-horizon error accumulation and weakened motion dynamics in distilled AR video generators while preserving the original few-step inference path. The student follows the exact deployment rollout, generating each chunk from its own evolving KV cache, while the teacher is evaluated at the same student-visited denoising states with a cleaner AR-consistent temporal cache built from real long-video context. This provides dense trajectory-level velocity supervision and improves long-horizon visual quality and motion dynamics without changing the sampler, number of denoising steps, or inference-time cache mechanism.
