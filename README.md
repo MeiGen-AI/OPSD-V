@@ -30,6 +30,7 @@
 </p>
 
 <p align="center">
+  <a href="#news">News</a> |
   <a href="#installation">Installation</a> |
   <a href="#checkpoints">Checkpoints</a> |
   <a href="#training">Training</a> |
@@ -53,6 +54,10 @@
   </a>
 </p>
 
+## News
+
+- **9 Jul 2026:** We released the paper, model checkpoints, and training and inference code.
+
 ## WeChat Group
 
 <p align="center">
@@ -60,7 +65,7 @@
 </p>
 
 <p align="center">
-  Scan the QR code to join the OPSD-V discussion group. The code is valid until July 29, 2026.
+  Scan the QR code to join the OPSD-V discussion group. The code is valid until August 17, 2026.
 </p>
 
 OPSD-V is an on-policy self-distillation paradigm for post-training few-step autoregressive video diffusion models. It targets long-horizon error accumulation and weakened motion dynamics in distilled AR video generators while preserving the original few-step inference path. The student follows the exact deployment rollout, generating each chunk from its own evolving KV cache, while the teacher is evaluated at the same student-visited denoising states with a cleaner AR-consistent temporal cache built from real long-video context. This provides dense trajectory-level velocity supervision and improves long-horizon visual quality and motion dynamics without changing the sampler, number of denoising steps, or inference-time cache mechanism.
@@ -450,11 +455,11 @@ scaling direction as an important avenue for future exploration.
 ## Citation
 
 ```bibtex
-@misc{liu2026opsdv,
-  title  = {OPSD-V: On-Policy Self-Distillation for Post-Training Few-Step Autoregressive Video Generators},
-  author = {Liu, Hongyu and Wang, Chun and Gao, Feng and He, Xuanhua and Ma, Yue and Wan, Ziyu and Zhang, Yong and Wei, Xiaoming and Chen, Qifeng},
-  year   = {2026},
-  note   = {Preprint}
+@article{liu2026opsd,
+  title={OPSD-V: On-Policy Self-Distillation for Post-Training Few-Step Autoregressive Video Generators},
+  author={Liu, Hongyu and Wang, Chun and Gao, Feng and He, Xuanhua and Ma, Yue and Wan, Ziyu and Zhang, Yong and Wei, Xiaoming and Chen, Qifeng},
+  journal={arXiv preprint arXiv:2607.08766},
+  year={2026}
 }
 ```
 
