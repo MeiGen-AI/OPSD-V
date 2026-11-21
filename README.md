@@ -56,6 +56,14 @@
 
 ## News
 
+- **21 Nov 2026:** **LongCat-Video-Avatar 1.6** adopts **OPSD-V** for long-video post-training, supporting **stable audio-driven video generation beyond 10 minutes**. [Code](https://github.com/meituan-longcat/LongCat-Video) · [Checkpoints](https://huggingface.co/meituan-longcat/LongCat-Video-Avatar-1.6) · [Demo Page](https://meigen-ai.github.io/LongCat-Video-Avatar-1.6-Page/)
+
+  **10-minute demo (10:05)**
+
+  https://github.com/user-attachments/assets/1cead390-44f9-49fc-af6e-6d644b0b117c
+
+  [Watch or download the original-quality video](https://meigen-ai.github.io/LongCat-Video-Avatar-1.6-Page/videos/long_video/5.mp4).
+
 - **9 Jul 2026:** We released the paper, model checkpoints, and training and inference code.
 
 ## WeChat Group
